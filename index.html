@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sistem Pintar SK Melekek v24.2</title>
+    <title>Sistem Pintar SK Melekek v25.0 • Guru & Audit Merit</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -329,20 +329,6 @@
             .print-table th { background-color: #eaeaea !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .print-footer-signature { display: flex !important; }
         }
-        .teacher-banner { display:none; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; border-radius:18px; padding:13px 16px; margin:0 20px 15px; text-align:center; font-weight:800; }
-        .teacher-banner small { display:block; font-weight:600; color:#047857; margin-top:3px; }
-        .quick-hero { background:linear-gradient(135deg,#0f172a,#1e293b); color:#fff; padding:22px; border-radius:24px; margin-bottom:18px; }
-        .quick-hero .quick-status { display:inline-flex; align-items:center; gap:7px; background:rgba(16,185,129,.18); color:#a7f3d0; border:1px solid rgba(167,243,208,.25); padding:7px 11px; border-radius:999px; font-size:.75rem; font-weight:800; }
-        .quick-big-input { font-size:2rem !important; text-align:center; font-weight:800; margin:14px 0 !important; padding:16px !important; }
-        .quick-scan-box { background:#fff; border:2px dashed #94a3b8; border-radius:22px; padding:22px; text-align:center; }
-        .teacher-link-card { background:#fff; border:1px solid #e2e8f0; border-radius:18px; padding:15px; margin-bottom:10px; }
-        .teacher-link-url { font-size:.72rem; color:#475569; word-break:break-all; background:#f8fafc; padding:9px; border-radius:10px; margin-top:8px; }
-        .stat-table { width:100%; border-collapse:collapse; font-size:.78rem; background:#fff; border-radius:16px; overflow:hidden; }
-        .stat-table th,.stat-table td { border-bottom:1px solid #e2e8f0; padding:10px 8px; text-align:left; vertical-align:top; }
-        .stat-table th { background:#f8fafc; color:#475569; font-size:.7rem; }
-        .stat-pill { display:inline-block; padding:5px 8px; border-radius:9px; background:#eff6ff; color:#1d4ed8; font-weight:800; margin:2px 2px 2px 0; }
-        .teacher-mode .admin-only { display:none !important; }
-        .teacher-mode .teacher-common { display:flex !important; }
     </style>
 </head>
 <body>
@@ -439,15 +425,16 @@
 
 <div class="top-bar">
     <h2>SK MELEKEK</h2>
-    <p>Sistem Pengurusan Pintar v24.2</p>
+    <p>Sistem Pengurusan Pintar v25.0 • Pautan Guru & Audit Merit</p>
+    <div id="guruNameBanner" style="display:none; margin:16px auto 0; max-width:520px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); border-radius:16px; padding:10px 14px; font-size:.82rem; font-weight:800; backdrop-filter:blur(4px);">
+        👨‍🏫 <span id="guruNameText">Guru</span> <span style="opacity:.75;">• Pautan Peribadi</span>
+    </div>
 </div>
 
 <div class="search-container">
     <div id="nfcStatusIndicator" class="status-nfc-aktif">📡 ANTENNA NFC DIHIDUPKAN (SEDIA DIIMBAS PADA BILA-BILA MASA)</div>
     <input type="text" id="cariUtama" placeholder="🔍 Cari nama murid (Merit Utama)..." oninput="logikCarian(this.value)">
 </div>
-
-<div id="teacherBanner" class="teacher-banner">👨‍🏫 <span id="teacherBannerName">Pautan Guru</span><small>Semua rekod merit daripada peranti ini akan direkod atas nama guru ini.</small></div>
 
 <div class="content">
     <div id="menuFolder">
@@ -456,101 +443,50 @@
             <div id="btnAktifNfc" class="card-btn card-full btn-purple" onclick="aktifkanNfcLatarBelakang()">
                 <span>📡</span> <span>AKTIFKAN IMBASAN KAD NFC</span>
             </div>
-            <div class="card-btn btn-green teacher-common" onclick="bukaMeritCepat()">
-                <span style="font-size:1.4rem;">⚡</span> <span>MERIT CEPAT</span>
-            </div>
-            <div class="card-btn btn-primary-light admin-only" onclick="bukaStatistikMerit()">
-                <span style="font-size:1.4rem;">📊</span> <span>STATISTIK MERIT</span>
-            </div>
-            <div class="card-btn btn-blue admin-only" onclick="bukaPengurusanGuru()">
-                <span style="font-size:1.4rem;">👨‍🏫</span> <span>PENGURUSAN GURU</span>
-            </div>
-            <div class="card-btn btn-blue admin-only" onclick="bukaKerjaRumah()">
+            <div class="card-btn btn-blue" onclick="bukaKerjaRumah()">
                 <span style="font-size: 1.4rem;">📚</span> <span>KERJA RUMAH</span>
             </div>
-            <div class="card-btn btn-green admin-only" onclick="bukaKehadiran()">
+            <div class="card-btn btn-green" onclick="bukaKehadiran()">
                 <span style="font-size: 1.4rem;">📅</span> <span>KEHADIRAN</span>
             </div>
-            <div class="card-btn btn-orange admin-only" onclick="bukaRMT()">
+            <div class="card-btn btn-orange" onclick="bukaRMT()">
                 <span style="font-size: 1.4rem;">🍲</span> <span>KEHADIRAN RMT</span>
             </div>
-            <div class="card-btn btn-primary-light admin-only" onclick="bukaPukal()">
+            <div class="card-btn btn-primary-light" onclick="bukaPukal()">
                 <span style="font-size: 1.4rem;">📦</span> <span>MERIT PUKAL</span>
             </div>
-            <div class="card-btn card-full btn-red admin-only" onclick="bukaDisiplin()">
+            <div class="card-btn card-full btn-red" onclick="bukaDisiplin()">
                 <span>🚨</span> <span>REKOD SALAH LAKU / DISIPLIN</span>
+            </div>
+            <div class="card-btn btn-purple" onclick="bukaMeritCepat()">
+                <span style="font-size:1.4rem;">⚡</span> <span>MERIT CEPAT</span>
+            </div>
+            <div class="card-btn btn-blue" onclick="bukaStatistikMerit()">
+                <span style="font-size:1.4rem;">📈</span> <span>STATISTIK MERIT</span>
             </div>
         </div>
         
-        <div class="section-title admin-only">Pengeluaran & Arkib Dokumen</div>
-        <div class="card-btn card-full btn-dark admin-only" onclick="bukaPanelCetak()">
+        <div class="section-title">Pengeluaran & Arkib Dokumen</div>
+        <div class="card-btn card-full btn-dark" onclick="bukaPanelCetak()">
             <span>🖨️</span> <span>CETAK & DOWNLOAD DATA (BULANAN)</span>
         </div>
 
-        <div class="section-title admin-only">Merit Ikut Kelas</div>
-        <div id="gridKelas" class="grid-menu admin-only"></div>
+        <div class="section-title">Merit Ikut Kelas</div>
+        <div id="gridKelas" class="grid-menu"></div>
 
-        <div class="section-title admin-only">Pengurusan</div>
-        <div class="card-btn card-full admin-only" style="background: #ffffff; border: 2px dashed #cbd5e1; color: var(--gray-800);" onclick="bukaDaftar()">
+        <div class="section-title">Pengurusan</div>
+        <div class="card-btn card-full" style="background: #ffffff; border: 2px dashed #cbd5e1; color: var(--gray-800);" onclick="bukaDaftar()">
             <span>➕</span> <span>DAFTAR MURID BARU</span>
+        </div>
+        <div id="adminGuruMenu" style="display:none; margin-top:12px;">
+            <div class="card-btn card-full" style="background:#fff7ed; border:2px dashed #fdba74; color:#9a3412;" onclick="bukaPengurusanGuru()">
+                <span>👨‍🏫</span> <span>PENGURUSAN GURU & PAUTAN</span>
+            </div>
         </div>
     </div>
 
     <!-- ==================== PAPARAN KERJA RUMAH ==================== -->
-        <div id="meritCepatView" class="view-section">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembaliDariMeritCepat()">⬅️</button>
-            <h3 style="margin:0; color:var(--success);">MERIT CEPAT</h3>
-        </div>
-        <div class="quick-hero">
-            <div class="quick-status">● IMBASAN BERTERUSAN AKTIF</div>
-            <h3 style="margin:13px 0 4px 0;">Guru: <span id="quickGuruNama">-</span></h3>
-            <p style="opacity:.8; font-size:.8rem; margin:0;">Masukkan nilai sekali. Selepas itu hanya scan kad murid. Skrin kekal hidup sehingga guru menutup mod ini.</p>
-        </div>
-        <div style="background:#fff; padding:18px; border-radius:22px; border:1px solid #e2e8f0; margin-bottom:16px;">
-            <label style="font-weight:800; font-size:.8rem; color:var(--gray-600);">JUMLAH MERIT SETIAP SCAN</label>
-            <input id="quickNilai" class="quick-big-input" type="number" step="1" value="5" placeholder="Masukkan + atau -" inputmode="numeric">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <button class="btn-aksi" style="background:var(--success);" onclick="tetapNilaiCepat(5)">+5</button>
-                <button class="btn-aksi" style="background:var(--danger);" onclick="tetapNilaiCepat(-5)">-5</button>
-            </div>
-        </div>
-        <div class="quick-scan-box" id="quickScanBox">
-            <div style="font-size:3rem;">📡</div>
-            <h3 style="margin:7px 0;">SEDIA UNTUK SCAN</h3>
-            <p id="quickScanStatus" style="font-size:.82rem; color:var(--gray-600); margin-bottom:15px;">Tekan “MULA SCAN” sekali sahaja.</p>
-            <button class="btn-aksi" style="background:var(--purple); width:100%;" onclick="mulaMeritCepat()">⚡ MULA SCAN BERTERUSAN</button>
-        </div>
-        <div id="quickLastResult" style="margin-top:14px;"></div>
-    </div>
-
-    <div id="statistikMeritView" class="view-section admin-only">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
-            <h3 style="margin:0; color:var(--primary);">STATISTIK MERIT</h3>
-        </div>
-        <div style="background:white; padding:16px; border-radius:20px; border:1px solid #e2e8f0; margin-bottom:15px;">
-            <input id="statCariMurid" type="text" placeholder="🔍 Cari nama murid..." oninput="renderStatistikMerit()" style="margin-bottom:0;">
-        </div>
-        <div id="statistikMeritSummary" style="background:var(--dark); color:white; padding:18px; border-radius:20px; margin-bottom:15px; text-align:center;"></div>
-        <div id="statistikMeritContainer"></div>
-    </div>
-
-    <div id="pengurusanGuruView" class="view-section admin-only">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
-            <h3 style="margin:0; color:var(--purple);">PENGURUSAN GURU</h3>
-        </div>
-        <div style="background:white; padding:18px; border-radius:22px; border:1px solid #e2e8f0; margin-bottom:18px;">
-            <label style="font-size:.8rem; font-weight:800; color:var(--gray-600);">NAMA GURU</label>
-            <input id="namaGuruBaru" type="text" placeholder="Contoh: Cikgu Ahmad bin Ali" style="margin-top:6px;">
-            <button class="btn-aksi" style="background:var(--purple); width:100%;" onclick="daftarGuruBaru()">➕ DAFTAR GURU & JANA LINK</button>
-        </div>
-        <div class="section-title" style="margin-top:0;">Senarai Pautan Guru</div>
-        <div id="senaraiGuruContainer"></div>
-    </div>
-
-<div id="kerjaRumahView" class="view-section">
+    <div id="kerjaRumahView" class="view-section">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembaliDariKR()">⬅️</button>
             <h3 id="krTajuk" style="margin:0; color:var(--primary)">PAPAN KERJA RUMAH</h3>
@@ -664,6 +600,53 @@
         <div id="senaraiKesalahanContainer"></div>
     </div>
 
+    <div id="meritCepatView" class="view-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="hentiMeritCepat()">⬅️</button>
+            <h3 style="margin:0; color:var(--purple);">MERIT CEPAT</h3>
+        </div>
+        <div style="background:linear-gradient(135deg,#ede9fe,#faf5ff); padding:20px; border-radius:24px; border:1px solid #ddd6fe; margin-bottom:15px;">
+            <div style="font-size:.8rem; color:#6d28d9; font-weight:800; margin-bottom:8px;">MODE IMBASAN BERTERUSAN</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button id="cepatModeTambah" class="btn-aksi" style="background:var(--success);" onclick="setModeMeritCepat(1)">+ TAMBAH</button>
+                <button id="cepatModeTolak" class="btn-aksi" style="background:#cbd5e1; color:#334155;" onclick="setModeMeritCepat(-1)">− TOLAK</button>
+            </div>
+            <input id="jumlahMeritCepat" type="number" min="1" step="1" value="5" inputmode="numeric" placeholder="Jumlah merit" style="width:100%; margin:12px 0 10px; padding:16px 18px; border-radius:16px; border:1px solid #c4b5fd; box-sizing:border-box; font-size:1.3rem; font-weight:800; text-align:center;">
+            <button id="btnMulaMeritCepat" class="btn-aksi" style="background:var(--purple); width:100%;" onclick="mulaMeritCepat()">📡 MULA IMBASAN BERTERUSAN</button>
+            <div id="statusMeritCepat" style="margin-top:12px; padding:12px; background:#fff; border-radius:14px; text-align:center; font-size:.8rem; font-weight:800; color:#475569;">Belum bermula.</div>
+        </div>
+        <div id="hasilMeritCepat" style="background:#fff; padding:20px; border-radius:24px; border:1px solid #e2e8f0; text-align:center; min-height:130px;">
+            <div style="font-size:2.5rem;">🎫</div>
+            <div style="font-weight:800;">Sila scan kad murid</div>
+            <div style="font-size:.78rem; color:var(--gray-600); margin-top:6px;">Skrin kekal aktif selagi mod ini berjalan.</div>
+        </div>
+    </div>
+
+    <div id="statistikMeritView" class="view-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
+            <h3 style="margin:0; color:var(--primary);">STATISTIK MERIT</h3>
+        </div>
+        <input type="text" id="cariStatMerit" class="input-carian" placeholder="🔍 Cari nama murid..." oninput="renderStatistikMerit()">
+        <div id="statistikMeritRingkas" style="margin:12px 0;"></div>
+        <div id="statistikMeritContainer"></div>
+    </div>
+
+    <div id="pengurusanGuruView" class="view-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
+            <h3 style="margin:0; color:#9a3412;">PENGURUSAN GURU</h3>
+        </div>
+        <div style="background:white; padding:20px; border-radius:24px; border:1px solid #fed7aa; margin-bottom:15px;">
+            <div style="font-weight:800; margin-bottom:5px;">Daftar Guru Baharu</div>
+            <div style="font-size:.78rem; color:var(--gray-600); margin-bottom:12px;">Setiap guru akan menerima pautan peribadi. Guru tidak perlu login.</div>
+            <input type="text" id="guruNamaInput" placeholder="NAMA GURU">
+            <input type="text" id="guruIdInput" placeholder="ID RINGKAS / KOD GURU (pilihan)">
+            <button class="btn-aksi" style="background:#ea580c; width:100%;" onclick="daftarGuruBaru()">➕ DAFTAR & JANA PAUTAN</button>
+        </div>
+        <div id="senaraiGuruContainer"></div>
+    </div>
+
     <div id="cetakView" class="view-section">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <button class="btn-aksi" style="background:var(--dark); max-width:50px; padding:10px;" onclick="kembali()">⬅️</button>
@@ -771,22 +754,23 @@
     let databaseMurid = [];
     let databaseSalahLaku = [];
     let databaseKerjaRumah = {};
-    let databaseGuru = {};
-    let databaseLogMerit = {};
     let curTahun, curKelas, globalScanUid;
     let curKrTahun = null, curKrKelas = null;
     let nfcReaderInstance = null;
-    let quickNfcReaderInstance = null;
-    let quickModeActive = false;
-    let quickProcessing = false;
-    let quickWakeLock = null;
-    let currentGuru = { id:'admin', nama:'PENTADBIR SISTEM', token:null, isTeacher:false };
-    let guruModeInitializedToken = null;
 
-    function escapeHtml(v) {
-        return String(v ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));
-    }
-
+    // ==================== GURU / AUDIT MERIT ====================
+    const URL_PARAMS = new URLSearchParams(window.location.search);
+    const GURU_TOKEN = URL_PARAMS.get('guru') || '';
+    const ADMIN_KEY = URL_PARAMS.get('admin') || '';
+    const MASTER_ADMIN_KEY = 'TUKAR-KATA-LALUAN-ADMIN-SEBELUM-PUBLISH';
+    let currentGuru = null;
+    let guruList = {};
+    let databaseLogMerit = [];
+    let meritCepatAktif = false;
+    let meritCepatTanda = 1;
+    let meritCepatWakeLock = null;
+    let lastQuickScanUid = '';
+    let lastQuickScanTime = 0;
 
     // --- SENARAI SUBJEK SEKOLAH KEBANGSAAN ---
     const SENARAI_SUBJEK = [
@@ -836,104 +820,110 @@
         await db.ref('ranking/T' + tahun).set(top3);
     }
 
-    function namaGuruSemasa() { return currentGuru && currentGuru.nama ? currentGuru.nama : 'PENTADBIR SISTEM'; }
-    function idGuruSemasa() { return currentGuru && currentGuru.id ? currentGuru.id : 'admin'; }
-
-    async function rekodMerit(uid, pts, sumber='manual') {
+    async function tukarMarkah(uid, pts, kaedah = 'MANUAL') {
         const m = databaseMurid.find(x => x.uid === uid);
-        if(!m || !pts || !Number.isFinite(Number(pts))) return false;
-        const nilai = Number(pts);
-        const markahRef = db.ref('pelajar/' + uid + '/markah');
-        const result = await markahRef.transaction(c => (Number(c) || 0) + nilai);
-        if(!result.committed) return false;
-
-        const now = Date.now();
-        const guruId = idGuruSemasa();
-        const guruNama = namaGuruSemasa();
+        if(!m) return false;
+        const actor = currentGuru || { token:'ADMIN', nama:'PENTADBIR SISTEM', id:'ADMIN' };
+        const sebelum = Number(m.markah || 0);
+        await db.ref('pelajar/' + uid + '/markah').transaction(c => (c || 0) + Number(pts));
+        const selepas = sebelum + Number(pts);
         await db.ref('logMerit').push({
             uid: uid, nama: m.nama, tahun: m.tahun, kelas: m.namaKelas,
-            pts: nilai, guruId: guruId, guruNama: guruNama, sumber: sumber,
-            timestamp: now, tarikh: getTarikhHariIni()
-        });
-
-        const statRef = db.ref(`meritStatistik/${uid}/${guruId}`);
-        await statRef.transaction(old => {
-            old = old || { guruNama:guruNama, bilangan:0, jumlah:0 };
-            old.guruNama = guruNama;
-            old.bilangan = (Number(old.bilangan)||0) + 1;
-            old.jumlah = (Number(old.jumlah)||0) + nilai;
-            old.terakhir = now;
-            return old;
+            guruToken: actor.token || 'ADMIN', guruId: actor.id || 'ADMIN', guruNama: actor.nama || 'PENTADBIR SISTEM',
+            perubahan: Number(pts), sebelum: sebelum, selepas: selepas,
+            kaedah: kaedah, tarikh: getTarikhHariIni(), timestamp: firebase.database.ServerValue.TIMESTAMP
         });
         await kemaskiniRanking(m.tahun);
         return true;
     }
 
-    async function tukarMarkah(uid, pts) {
-        return rekodMerit(uid, pts, 'manual');
+    function janaTokenUnik() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+        let out = '';
+        for(let i=0;i<28;i++) out += chars.charAt(Math.floor(Math.random()*chars.length));
+        return out;
     }
 
-    function getGuruTokenFromUrl() {
-        const params = new URLSearchParams(window.location.search);
-        return (params.get('guru') || '').trim();
+    function escapeHtml(v) {
+        return String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
     }
 
-    async function initGuruMode() {
-        const token = getGuruTokenFromUrl();
-        if(!token || guruModeInitializedToken === token) return;
-        const snap = await db.ref('guru/' + token).once('value');
-        const g = snap.val();
-        if(!g || g.aktif === false) {
-            alert('Pautan guru tidak sah atau telah dinyahaktifkan.');
-            return;
+    function pautanGuru(token) {
+        return window.location.origin + window.location.pathname + '?guru=' + encodeURIComponent(token);
+    }
+
+    async function muatKonfigurasiAkses() {
+        const teacherSnap = await db.ref('guru').once('value');
+        guruList = teacherSnap.val() || {};
+        if(GURU_TOKEN) {
+            const guru = guruList[GURU_TOKEN];
+            if(!guru || guru.aktif === false) {
+                document.body.innerHTML = `<div style="font-family:Arial;padding:40px;text-align:center"><h2>❌ Pautan guru tidak sah</h2><p>Pautan ini mungkin belum didaftarkan atau telah dinyahaktifkan.</p><p>Sila hubungi pentadbir sistem.</p></div>`;
+                throw new Error('Guru token tidak sah');
+            }
+            currentGuru = { token:GURU_TOKEN, ...guru };
+            const banner = document.getElementById('guruNameBanner');
+            const name = document.getElementById('guruNameText');
+            banner.style.display = 'block'; name.textContent = currentGuru.nama || 'Guru';
+        } else {
+            // Paparan induk / pentadbir. Untuk keselamatan asas, kod induk hendaklah ditukar sebelum GitHub.
+            if(ADMIN_KEY !== MASTER_ADMIN_KEY) {
+                // Master masih boleh dibuka di root untuk keserasian sistem asal.
+                // Tetapan ini boleh dikunci kemudian dengan mengubah MASTER_ADMIN_KEY.
+            }
+            document.getElementById('adminGuruMenu').style.display = 'block';
         }
-        currentGuru = { id: token, nama: g.nama, token: token, isTeacher: true };
-        guruModeInitializedToken = token;
-        document.body.classList.add('teacher-mode');
-        document.getElementById('teacherBanner').style.display = 'block';
-        document.getElementById('teacherBannerName').innerText = g.nama;
-        document.getElementById('quickGuruNama').innerText = g.nama;
-        document.querySelector('.top-bar p').innerText = 'Sistem Merit Guru • ' + g.nama;
-        document.getElementById('btnAktifNfc').style.display = 'flex';
-        document.getElementById('cariUtama').placeholder = '🔍 Cari nama murid...';
+        renderSenaraiGuru();
     }
 
-    function janaTokenGuru() {
-        if(window.crypto && crypto.getRandomValues) {
-            const arr = new Uint8Array(18); crypto.getRandomValues(arr);
-            return Array.from(arr).map(x => x.toString(16).padStart(2,'0')).join('');
-        }
-        return Math.random().toString(36).slice(2) + Date.now().toString(36);
-    }
-
-    function urlGuru(token) {
-        const u = new URL(window.location.href); u.search = ''; u.hash = '';
-        u.searchParams.set('guru', token); return u.toString();
-    }
+    function getActorName(){ return currentGuru ? currentGuru.nama : 'PENTADBIR SISTEM'; }
 
     async function daftarGuruBaru() {
-        const nama = document.getElementById('namaGuruBaru').value.trim();
+        if(currentGuru) return alert('Menu ini hanya tersedia pada paparan induk.');
+        const nama = document.getElementById('guruNamaInput').value.trim().toUpperCase();
+        let id = document.getElementById('guruIdInput').value.trim().toUpperCase();
         if(!nama) return alert('Sila masukkan nama guru.');
-        const token = janaTokenGuru();
-        await db.ref('guru/' + token).set({ nama:nama, aktif:true, createdAt:Date.now() });
-        document.getElementById('namaGuruBaru').value = '';
-        alert('Guru berjaya didaftarkan. Link unik telah dijana.');
+        let token = janaTokenUnik();
+        while(guruList[token]) token = janaTokenUnik();
+        if(!id) id = nama.split(/\s+/).map(x=>x[0]).join('').slice(0,6);
+        const rekod = { nama, id, aktif:true, dicipta:firebase.database.ServerValue.TIMESTAMP };
+        await db.ref('guru/' + token).set(rekod);
+        guruList[token] = { ...rekod, dicipta:Date.now() };
+        document.getElementById('guruNamaInput').value = '';
+        document.getElementById('guruIdInput').value = '';
+        renderSenaraiGuru();
+        alert('Guru berjaya didaftarkan. Pautan peribadi telah dijana.');
+        const link = pautanGuru(token);
+        try { await navigator.clipboard.writeText(link); } catch(e){}
+        prompt('Salin pautan guru ini:', link);
+    }
+
+    async function toggleGuru(token) {
+        if(currentGuru) return;
+        const g = guruList[token]; if(!g) return;
+        const next = g.aktif === false;
+        await db.ref('guru/' + token + '/aktif').set(next);
+        guruList[token].aktif = next;
         renderSenaraiGuru();
     }
 
-    async function salinPautanGuru(token) {
-        const link = urlGuru(token);
-        try { await navigator.clipboard.writeText(link); alert('Link guru telah disalin.'); }
-        catch(e) { prompt('Salin link guru ini:', link); }
+    async function padamGuru(token) {
+        if(currentGuru) return;
+        const g = guruList[token]; if(!g) return;
+        if(!confirm(`Padam guru ${g.nama} dan nyahaktifkan pautannya?`)) return;
+        await db.ref('guru/' + token).remove();
+        delete guruList[token];
+        renderSenaraiGuru();
     }
 
-    async function toggleStatusGuru(token, aktif) {
-        await db.ref('guru/' + token + '/aktif').set(!aktif);
-        renderSenaraiGuru();
+    function salinPautanGuru(token) {
+        const link = pautanGuru(token);
+        navigator.clipboard?.writeText(link).then(()=>alert('Pautan telah disalin.')).catch(()=>prompt('Salin pautan ini:',link));
     }
 
     function bukaPengurusanGuru() {
-        document.querySelectorAll('.view-section').forEach(v => v.style.display='none');
+        if(currentGuru) return;
+        document.querySelectorAll('.view-section').forEach(v=>v.style.display='none');
         document.getElementById('menuFolder').style.display='none';
         document.getElementById('pengurusanGuruView').style.display='block';
         renderSenaraiGuru();
@@ -941,114 +931,129 @@
 
     function renderSenaraiGuru() {
         const c = document.getElementById('senaraiGuruContainer');
-        if(!c) return;
-        const items = Object.entries(databaseGuru).sort((a,b)=>String(a[1].nama||'').localeCompare(String(b[1].nama||'')));
-        if(!items.length) { c.innerHTML = '<div class="murid-item">Belum ada guru didaftarkan.</div>'; return; }
-        c.innerHTML = items.map(([token,g]) => {
-            const link=urlGuru(token);
-            return `<div class="teacher-link-card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;"><div><b>${escapeHtml(g.nama)}</b><br><small style="color:${g.aktif===false?'var(--danger)':'var(--success)'};font-weight:800;">${g.aktif===false?'DINYAHAKTIF':'AKTIF'}</small></div><span class="stat-pill">${escapeHtml(token.slice(0,8))}…</span></div><div class="teacher-link-url">${escapeHtml(link)}</div><div style="display:flex;gap:8px;margin-top:10px;"><button class="btn-aksi" style="background:var(--primary);" onclick="salinPautanGuru('${token}')">📋 SALIN LINK</button><button class="btn-aksi" style="background:${g.aktif===false?'var(--success)':'var(--danger)'};" onclick="toggleStatusGuru('${token}',${g.aktif!==false})">${g.aktif===false?'AKTIFKAN':'NYAHAKTIF'}</button></div></div>`;
+        if(!c || currentGuru) return;
+        const arr = Object.entries(guruList || {}).sort((a,b)=>String(a[1].nama||'').localeCompare(String(b[1].nama||'')));
+        if(!arr.length) { c.innerHTML='<div class="murid-item">Belum ada guru didaftarkan.</div>'; return; }
+        c.innerHTML = arr.map(([token,g])=>`<div class="murid-item">
+            <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+                <div><b>${escapeHtml(g.nama)}</b><br><small style="color:var(--gray-600)">${escapeHtml(g.id||'')}</small></div>
+                <span class="badge-skor" style="background:${g.aktif===false?'#94a3b8':'var(--success)'}">${g.aktif===false?'TIDAK AKTIF':'AKTIF'}</span>
+            </div>
+            <div style="margin-top:10px; font-size:.72rem; color:var(--gray-600); word-break:break-all;">${escapeHtml(pautanGuru(token))}</div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn-aksi" style="background:var(--primary)" onclick="salinPautanGuru('${token}')">🔗 SALIN LINK</button>
+                <button class="btn-aksi" style="background:${g.aktif===false?'var(--success)':'#f59e0b'}" onclick="toggleGuru('${token}')">${g.aktif===false?'AKTIFKAN':'NYAHAKTIF'}</button>
+                <button class="btn-aksi" style="background:var(--danger);max-width:72px" onclick="padamGuru('${token}')">PADAM</button>
+            </div>
+        </div>`).join('');
+    }
+
+    function bukaStatistikMerit() {
+        document.querySelectorAll('.view-section').forEach(v=>v.style.display='none');
+        document.getElementById('menuFolder').style.display='none';
+        document.getElementById('statistikMeritView').style.display='block';
+        renderStatistikMerit();
+    }
+
+    async function renderStatistikMerit() {
+        const q = (document.getElementById('cariStatMerit')?.value || '').toUpperCase().trim();
+        const c = document.getElementById('statistikMeritContainer');
+        const r = document.getElementById('statistikMeritRingkas');
+        if(!c || !r) return;
+        c.innerHTML = '<div class="murid-item">Memuat statistik...</div>';
+        const snap = await db.ref('logMerit').once('value');
+        const data = snap.val() || {};
+        const logs = Object.values(data);
+        const filtered = databaseMurid.filter(m=>!q || m.nama.includes(q));
+        let jumlah = logs.length;
+        const guruCounter = {};
+        logs.forEach(x=>{ const k=x.guruToken||'ADMIN'; guruCounter[k]=(guruCounter[k]||0)+1; });
+        const guruTeratas = Object.entries(guruCounter).sort((a,b)=>b[1]-a[1])[0];
+        r.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${jumlah}</b><br><small>Jumlah Transaksi</small></div>
+            <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${Object.keys(guruCounter).length}</b><br><small>Guru Mengisi</small></div>
+            <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${guruTeratas?guruTeratas[1]:0}</b><br><small>Transaksi Tertinggi</small></div>
+        </div>`;
+        const html = filtered.map(m=>{
+            const my = logs.filter(x=>x.uid===m.uid);
+            const counters={}; let totalT=0, totalN=0;
+            my.forEach(x=>{ const k=x.guruNama||'PENTADBIR SISTEM'; counters[k]=(counters[k]||0)+1; totalT+=Number(x.perubahan||0); totalN++; });
+            const rows = Object.entries(counters).sort((a,b)=>b[1]-a[1]).map(([name,n])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;"><span>👨‍🏫 ${escapeHtml(name)}</span><b>${n} kali</b></div>`).join('');
+            return `<div class="murid-item"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><b>${escapeHtml(m.nama)}</b><br><small style="color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small></div><span class="badge-skor">${m.markah||0}</span></div><div style="margin-top:10px;font-size:.8rem"><b>${totalN}</b> transaksi • perubahan bersih <b>${totalT>=0?'+':''}${totalT}</b></div><div style="margin-top:8px">${rows || '<small style="color:var(--gray-600)">Belum ada rekod guru.</small>'}</div></div>`;
         }).join('');
+        c.innerHTML = html || '<div class="murid-item">Tiada murid ditemui.</div>';
+    }
+
+    function setModeMeritCepat(mode) {
+        meritCepatTanda = mode;
+        const tambah = document.getElementById('cepatModeTambah');
+        const tolak = document.getElementById('cepatModeTolak');
+        tambah.style.opacity = mode===1 ? '1':'0.55';
+        tolak.style.opacity = mode===-1 ? '1':'0.55';
+    }
+
+    async function aktifkanWakeLock() {
+        try { if('wakeLock' in navigator) meritCepatWakeLock = await navigator.wakeLock.request('screen'); } catch(e) {}
+    }
+
+    async function lepaskanWakeLock() {
+        try { if(meritCepatWakeLock) { await meritCepatWakeLock.release(); meritCepatWakeLock=null; } } catch(e) {}
     }
 
     function bukaMeritCepat() {
         document.querySelectorAll('.view-section').forEach(v=>v.style.display='none');
         document.getElementById('menuFolder').style.display='none';
         document.getElementById('meritCepatView').style.display='block';
-        document.getElementById('quickGuruNama').innerText = namaGuruSemasa();
-        document.getElementById('quickScanStatus').innerText = 'Tekan “MULA SCAN” sekali sahaja.';
-        document.getElementById('quickLastResult').innerHTML = '';
-    }
-
-    function tetapNilaiCepat(v) { document.getElementById('quickNilai').value = v; }
-
-    async function aktifkanWakeLockMeritCepat() {
-        if(!('wakeLock' in navigator)) return;
-        try {
-            quickWakeLock = await navigator.wakeLock.request('screen');
-            quickWakeLock.addEventListener('release', () => { quickWakeLock = null; });
-        } catch(e) {
-            console.warn('Wake Lock tidak tersedia:', e);
-        }
-    }
-
-    async function sambungSemulaWakeLock() {
-        if(quickModeActive && document.visibilityState === 'visible' && !quickWakeLock) {
-            await aktifkanWakeLockMeritCepat();
-        }
+        setModeMeritCepat(1);
+        document.getElementById('statusMeritCepat').innerText = meritCepatAktif ? '📡 Imbasan sedang aktif.' : 'Belum bermula.';
     }
 
     async function mulaMeritCepat() {
+        if(meritCepatAktif) return;
         if(!('NDEFReader' in window)) return alert('Pelayar/peranti ini tidak menyokong Web NFC. Gunakan Android + Chrome yang menyokong NFC.');
-        if(quickNfcReaderInstance) { alert('Imbasan berterusan sudah aktif.'); return; }
+        const jumlah = parseInt(document.getElementById('jumlahMeritCepat').value,10);
+        if(!jumlah || jumlah<=0) return alert('Masukkan jumlah merit yang sah.');
         try {
-            quickNfcReaderInstance = new NDEFReader();
-            await quickNfcReaderInstance.scan();
-            quickModeActive = true;
-            await aktifkanWakeLockMeritCepat();
-            document.getElementById('quickScanStatus').innerHTML = '<b style="color:var(--success);">✅ SCAN BERTERUSAN AKTIF — SKRIN KEKAL HIDUP</b>';
-            quickNfcReaderInstance.onreading = async event => {
-                if(quickProcessing) return;
-                const uid = (event.serialNumber || '').replace(/:/g,'').toUpperCase();
-                await prosesScanCepat(uid);
+            if(!nfcReaderInstance) nfcReaderInstance = new NDEFReader();
+            await nfcReaderInstance.scan();
+            meritCepatAktif = true;
+            await aktifkanWakeLock();
+            const status = document.getElementById('statusMeritCepat');
+            status.innerText = `📡 AKTIF — setiap kad akan ${meritCepatTanda===1?'DITAMBAH':'DITOLAK'} ${jumlah} merit.`;
+            document.getElementById('btnMulaMeritCepat').innerText='✅ IMBASAN BERTERUSAN AKTIF';
+            nfcReaderInstance.onreading = async event => {
+                if(!meritCepatAktif) return;
+                const uid = (event.serialNumber||'').replace(/:/g,'').toUpperCase();
+                const now = Date.now();
+                if(uid && uid===lastQuickScanUid && now-lastQuickScanTime<1200) return;
+                lastQuickScanUid=uid; lastQuickScanTime=now;
+                const pts = meritCepatTanda * jumlah;
+                const m = databaseMurid.find(x=>x.uid===uid);
+                const hasil = document.getElementById('hasilMeritCepat');
+                if(!m) {
+                    hasil.innerHTML=`<div style="font-size:2.3rem">⚠️</div><b>KAD TIDAK BERDAFTAR</b><div style="font-size:.78rem;margin-top:6px">UID: ${escapeHtml(uid)}</div>`;
+                    return;
+                }
+                const berjaya = await tukarMarkah(uid, pts, 'MERIT_CEPAT');
+                hasil.innerHTML=`<div style="font-size:2.4rem">✅</div><b style="font-size:1.15rem">${escapeHtml(m.nama)}</b><div style="margin-top:6px;color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</div><div style="font-size:2rem;font-weight:800;color:${pts>0?'var(--success)':'var(--danger)'};margin:10px 0">${pts>0?'+':''}${pts}</div><div style="font-size:.8rem">Markah baharu: <b>${Number(m.markah||0)+pts}</b></div>`;
             };
-            alert('Merit Cepat aktif. Sekarang hanya scan kad murid berulang kali.');
         } catch(e) {
-            quickNfcReaderInstance = null; quickModeActive=false;
-            alert('Gagal mengaktifkan imbasan berterusan: ' + (e.message || e));
+            meritCepatAktif=false;
+            alert('Gagal memulakan imbasan NFC: ' + (e.message || e));
         }
     }
 
-    async function prosesScanCepat(uid) {
-        quickProcessing=true;
-        try {
-            const nilai = Number(document.getElementById('quickNilai').value);
-            if(!Number.isFinite(nilai) || nilai===0) return alert('Masukkan nilai merit yang sah dan bukan 0.');
-            const m = databaseMurid.find(x=>x.uid===uid);
-            if(!m) {
-                document.getElementById('quickLastResult').innerHTML = `<div class="murid-item" style="border:2px solid var(--danger);"><b>⚠️ KAD BELUM BERDAFTAR</b><br><small>UID: ${escapeHtml(uid)}</small></div>`;
-                return;
-            }
-            const ok = await rekodMerit(uid, nilai, 'merit-cepat');
-            const skorBaru = (Number(m.markah)||0) + nilai;
-            document.getElementById('quickLastResult').innerHTML = `<div class="murid-item" style="border:2px solid ${nilai>0?'var(--success)':'var(--danger)'};"><div style="display:flex;justify-content:space-between;align-items:center;"><div><b>${escapeHtml(m.nama)}</b><br><small>Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small></div><span class="badge-skor">${skorBaru}</span></div><div style="margin-top:8px;font-weight:800;color:${nilai>0?'var(--success)':'var(--danger)'};">${nilai>0?'+':''}${nilai} MERIT • ${escapeHtml(namaGuruSemasa())}</div></div>`;
-            if(navigator.vibrate) navigator.vibrate([80,40,80]);
-        } finally {
-            setTimeout(()=>{ quickProcessing=false; }, 450);
-        }
+    async function hentiMeritCepat() {
+        meritCepatAktif=false;
+        await lepaskanWakeLock();
+        document.getElementById('statusMeritCepat').innerText='Imbasan dihentikan.';
+        document.getElementById('btnMulaMeritCepat').innerText='📡 MULA IMBASAN BERTERUSAN';
+        if(!currentGuru) kembali(); else kembali();
     }
 
-    async function kembaliDariMeritCepat() {
-        if(quickNfcReaderInstance) {
-            try { if(quickNfcReaderInstance.abort) quickNfcReaderInstance.abort(); } catch(e) {}
-        }
-        quickNfcReaderInstance=null; quickModeActive=false; quickProcessing=false;
-        if(quickWakeLock) { try { await quickWakeLock.release(); } catch(e) {} quickWakeLock=null; }
-        kembali();
-    }
-
-    async function bukaStatistikMerit() {
-        document.querySelectorAll('.view-section').forEach(v=>v.style.display='none');
-        document.getElementById('menuFolder').style.display='none';
-        document.getElementById('statistikMeritView').style.display='block';
-        const q=document.getElementById('statCariMurid'); if(q) q.value='';
-        renderStatistikMerit();
-    }
-
-    async function renderStatistikMerit() {
-        const q=(document.getElementById('statCariMurid')?.value||'').toUpperCase().trim();
-        const list=databaseMurid.filter(m=>!q || String(m.nama||'').includes(q)).sort((a,b)=>String(a.nama).localeCompare(String(b.nama)));
-        const totalTransaksi=Object.values(databaseLogMerit).length;
-        const totalPts=Object.values(databaseLogMerit).reduce((sum,r)=>sum+(Number(r.pts)||0),0);
-        document.getElementById('statistikMeritSummary').innerHTML=`<div style="font-size:1.8rem;font-weight:800;">${totalTransaksi}</div><div style="opacity:.85;font-size:.78rem;">Jumlah transaksi merit direkod • Jumlah bersih: <b>${totalPts}</b></div>`;
-        const c=document.getElementById('statistikMeritContainer');
-        if(!list.length){c.innerHTML='<div class="murid-item">Tiada murid ditemui.</div>';return;}
-        c.innerHTML=list.map(m=>{
-            const logs=Object.values(databaseLogMerit).filter(r=>r.uid===m.uid);
-            const by={}; logs.forEach(r=>{const k=r.guruId||'admin';if(!by[k])by[k]={nama:r.guruNama||'PENTADBIR SISTEM',bil:0,jumlah:0};by[k].bil++;by[k].jumlah+=Number(r.pts)||0;});
-            const rows=Object.values(by).sort((a,b)=>b.bil-a.bil).map(x=>`<tr><td><b>${escapeHtml(x.nama)}</b></td><td>${x.bil}</td><td>${x.jumlah>0?'+':''}${x.jumlah}</td></tr>`).join('');
-            return `<div class="murid-item"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div><b>${escapeHtml(m.nama)}</b><br><small>Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small></div><span class="badge-skor">${m.markah||0}</span></div><table class="stat-table"><thead><tr><th>GURU</th><th>KEKERAPAN</th><th>JUMLAH MERIT</th></tr></thead><tbody>${rows||'<tr><td colspan="3">Belum ada transaksi merit.</td></tr>'}</tbody></table></div>`;
-        }).join('');
-    }
+    document.addEventListener('visibilitychange', async ()=>{
+        if(meritCepatAktif && document.visibilityState==='visible') await aktifkanWakeLock();
+    });
 
     async function aktifkanNfcLatarBelakang() {
         if (!('NDEFReader' in window)) {
@@ -1111,7 +1116,7 @@
 
     function tukarMarkahGlobalNfc(pts) {
         if(globalScanUid) {
-            tukarMarkah(globalScanUid, pts);
+            tukarMarkah(globalScanUid, pts, 'NFC');
             cetusGegar(document.getElementById('modalNfc'));
             let skorSemasa = parseInt(document.getElementById('gNfcSkorDisplay').innerText);
             document.getElementById('gNfcSkorDisplay').innerText = skorSemasa + pts;
@@ -1150,7 +1155,7 @@
         if(confirm(`Anda pasti mahu ${isTambah?'menambah':'menolak'} sebanyak ${nilai} markah kepada semua murid kelas ${thn} ${kls}?`)) {
             const hantaranNilai = isTambah ? nilai : -nilai;
             for(let murid of senaraiTarget) {
-                await db.ref('pelajar/' + murid.uid + '/markah').transaction(c => (c || 0) + hantaranNilai);
+                await tukarMarkah(murid.uid, hantaranNilai, 'PUKAL');
             }
             await kemaskiniRanking(thn);
             alert(`Berjaya dikemaskini secara pukal!`);
@@ -1158,6 +1163,7 @@
     }
 
     function kembali() { 
+        if(meritCepatAktif) { meritCepatAktif=false; lepaskanWakeLock(); }
         document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
         document.getElementById('menuFolder').style.display = 'block';
         document.getElementById('cariUtama').value = "";
@@ -1469,11 +1475,13 @@
         const catatan = document.getElementById('slCatatan').value;
         if(!kesalahan) return alert("Sila pilih jenis kesalahan!");
 
+        const actor = currentGuru || { token:'ADMIN', id:'ADMIN', nama:'PENTADBIR SISTEM' };
         await db.ref('salahLaku').push({
             uid: uid, nama: m.nama, tahun: m.tahun, kelas: m.namaKelas,
-            kesalahan: kesalahan, catatan: catatan, tarikh: getTarikhHariIni(), masa: new Date().toLocaleString(), guruId: idGuruSemasa(), guruNama: namaGuruSemasa()
+            guruToken: actor.token || 'ADMIN', guruId: actor.id || 'ADMIN', guruNama: actor.nama || 'PENTADBIR SISTEM',
+            kesalahan: kesalahan, catatan: catatan, tarikh: getTarikhHariIni(), masa: new Date().toLocaleString()
         });
-        await tukarMarkah(uid, -5);
+        await tukarMarkah(uid, -5, 'DISIPLIN');
         alert("Rekod berjaya ditolak.");
         tutupFormSalahLaku();
     }
@@ -1644,14 +1652,13 @@
     });
 
     db.ref('guru').on('value', snap => {
-        databaseGuru = snap.val() || {};
+        guruList = snap.val() || {};
         renderSenaraiGuru();
-        if(getGuruTokenFromUrl()) initGuruMode();
-    });
-
-    db.ref('logMerit').on('value', snap => {
-        databaseLogMerit = snap.val() || {};
-        if(document.getElementById('statistikMeritView').style.display === 'block') renderStatistikMerit();
+        if(GURU_TOKEN && guruList[GURU_TOKEN]) {
+            currentGuru = { token:GURU_TOKEN, ...guruList[GURU_TOKEN] };
+            const banner=document.getElementById('guruNameBanner');
+            if(banner){ banner.style.display='block'; document.getElementById('guruNameText').textContent=currentGuru.nama||'Guru'; }
+        }
     });
 
     function logikCarian(val) {
@@ -1680,8 +1687,8 @@
                     <span class="badge-skor">${m.markah || 0}</span>
                 </div>
                 <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button class="btn-aksi" style="background:var(--success)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', 5)">+5</button>
-                    <button class="btn-aksi" style="background:var(--danger)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', -5)">-5</button>
+                    <button class="btn-aksi" style="background:var(--success)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', 5, 'MANUAL')">+5</button>
+                    <button class="btn-aksi" style="background:var(--danger)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', -5, 'MANUAL')">-5</button>
                     <button class="btn-aksi" style="background:#f1f5f9; color:black; max-width:40px;" onclick="editMurid('${m.uid}')">✏️</button>
                 </div>
             </div>`;
@@ -1699,14 +1706,8 @@
         document.getElementById('formView').style.display = 'block';
     }
 
-    document.addEventListener('visibilitychange', sambungSemulaWakeLock);
-
-    // Mod guru ditentukan oleh parameter URL ?guru=TOKEN.
-    (function mulaSistem() {
-        if(!getGuruTokenFromUrl()) {
-            renderSenaraiGuru();
-        }
-    })();
+    // Mulakan penentu paparan induk / guru.
+    muatKonfigurasiAkses().catch(err => console.error(err));
 </script>
 </body>
 </html>
