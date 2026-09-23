@@ -283,6 +283,26 @@
             display: none; 
         }
 
+        /* Jadual Analisis Merit */
+        .table-log-merit {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 10px;
+        }
+
+        .table-log-merit th, .table-log-merit td {
+            border: 1px solid #e2e8f0;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        .table-log-merit th {
+            background: #f8fafc;
+            color: var(--gray-600);
+            font-weight: 700;
+        }
+
         /* Cetakan Skrin Khas */
         #cetakBorangKawasan { display: none; background: white; padding: 30px; border-radius: 20px; border: 1px solid #ddd; margin-top: 20px; }
         .print-header-area { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 4px double #222; }
@@ -866,10 +886,7 @@
             const name = document.getElementById('guruNameText');
             banner.style.display = 'block'; name.textContent = currentGuru.nama || 'Guru';
         } else {
-            // Paparan induk / pentadbir. Untuk keselamatan asas, kod induk hendaklah ditukar sebelum GitHub.
             if(ADMIN_KEY !== MASTER_ADMIN_KEY) {
-                // Master masih boleh dibuka di root untuk keserasian sistem asal.
-                // Tetapan ini boleh dikunci kemudian dengan mengubah MASTER_ADMIN_KEY.
             }
             document.getElementById('adminGuruMenu').style.display = 'block';
         }
@@ -974,12 +991,60 @@
             <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${Object.keys(guruCounter).length}</b><br><small>Guru Mengisi</small></div>
             <div class="murid-item" style="text-align:center"><b style="font-size:1.5rem">${guruTeratas?guruTeratas[1]:0}</b><br><small>Transaksi Tertinggi</small></div>
         </div>`;
+        
         const html = filtered.map(m=>{
-            const my = logs.filter(x=>x.uid===m.uid);
+            const my = logs.filter(x=>x.uid===m.uid).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
             const counters={}; let totalT=0, totalN=0;
             my.forEach(x=>{ const k=x.guruNama||'PENTADBIR SISTEM'; counters[k]=(counters[k]||0)+1; totalT+=Number(x.perubahan||0); totalN++; });
-            const rows = Object.entries(counters).sort((a,b)=>b[1]-a[1]).map(([name,n])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;"><span>👨‍🏫 ${escapeHtml(name)}</span><b>${n} kali</b></div>`).join('');
-            return `<div class="murid-item"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><b>${escapeHtml(m.nama)}</b><br><small style="color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small></div><span class="badge-skor">${m.markah||0}</span></div><div style="margin-top:10px;font-size:.8rem"><b>${totalN}</b> transaksi • perubahan bersih <b>${totalT>=0?'+':''}${totalT}</b></div><div style="margin-top:8px">${rows || '<small style="color:var(--gray-600)">Belum ada rekod guru.</small>'}</div></div>`;
+            
+            const rowsGuru = Object.entries(counters).sort((a,b)=>b[1]-a[1]).map(([name,n])=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:0.75rem;"><span>👨‍🏫 ${escapeHtml(name)}</span><b>${n} kali</b></div>`).join('');
+
+            let logTableRows = my.map(log => {
+                let masaTxt = log.timestamp ? new Date(log.timestamp).toLocaleString('ms-MY', {dateStyle:'short', timeStyle:'short'}) : (log.tarikh || '-');
+                let ptsTxt = log.perubahan > 0 ? `<span style="color:var(--success);font-weight:bold;">+${log.perubahan}</span>` : `<span style="color:var(--danger);font-weight:bold;">${log.perubahan}</span>`;
+                return `<tr>
+                    <td>${escapeHtml(log.guruNama || 'PENTADBIR SISTEM')}</td>
+                    <td>${ptsTxt}</td>
+                    <td>${escapeHtml(log.kaedah || 'MANUAL')}</td>
+                    <td>${log.sebelum ?? '-'} ➔ ${log.selepas ?? '-'}</td>
+                    <td>${masaTxt}</td>
+                </tr>`;
+            }).join('');
+
+            let tableHtml = my.length > 0 ? `
+                <div style="margin-top:10px; overflow-x:auto;">
+                    <div style="font-size:0.75rem; font-weight:700; color:var(--gray-600); margin-bottom:4px;">📋 AUDIT ISIAN MARKAH OLEH GURU:</div>
+                    <table class="table-log-merit">
+                        <thead>
+                            <tr>
+                                <th>Guru</th>
+                                <th>Markah</th>
+                                <th>Kaedah</th>
+                                <th>Sebelum ➔ Selepas</th>
+                                <th>Tarikh / Masa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${logTableRows}
+                        </tbody>
+                    </table>
+                </div>
+            ` : '<div style="margin-top:6px; font-size:0.75rem; color:var(--gray-600);">Tiada sebarang log isian guru.</div>';
+
+            return `<div class="murid-item">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+                    <div><b>${escapeHtml(m.nama)}</b><br><small style="color:var(--gray-600)">Tahun ${m.tahun} ${escapeHtml(m.namaKelas)}</small></div>
+                    <span class="badge-skor">${m.markah||0}</span>
+                </div>
+                <div style="margin-top:8px;font-size:.8rem">
+                    <b>${totalN}</b> transaksi • perubahan bersih <b>${totalT>=0?'+':''}${totalT}</b>
+                </div>
+                <div style="margin-top:6px; background:#fafafa; padding:8px; border-radius:12px; border:1px solid #f1f5f9;">
+                    <div style="font-size:0.75rem; font-weight:700; color:var(--gray-600); margin-bottom:4px;">📊 RINGKASAN ISIAN GURU:</div>
+                    ${rowsGuru || '<small style="color:var(--gray-600)">Belum ada rekod guru.</small>'}
+                </div>
+                ${tableHtml}
+            </div>`;
         }).join('');
         c.innerHTML = html || '<div class="murid-item">Tiada murid ditemui.</div>';
     }
@@ -1547,101 +1612,215 @@
             if(bilanganHariSekolah === 0) {
                 htmlHTML = `<p style="color:red; text-align:center; font-weight:bold; padding:30px;">Tiada data kehadiran direkodkan bagi bulan ${namaBulan} ${sTahun}.</p>`;
             } else {
-                htmlHTML = `<p style="font-size:0.9rem; margin-bottom:12px; color:#333;"><b>Jumlah Hari Persekolahan Berdata:</b> ${bilanganHariSekolah} Hari</p>
-                            <table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENUH MURID</th><th style="width:20%">KELAS</th><th style="width:20%">HADIR (HARI)</th><th style="width:15%">PERATUSAN</th></tr></thead><tbody>`;
+                htmlHTML = `<p style="font-size:0.9rem; margin-bottom:12px;">Jumlah Hari Rekod Kehadiran Terlibat: <b>${bilanganHariSekolah} Hari</b></p>`;
+                htmlHTML += `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENUH MURID</th><th style="width:15%">KELAS</th><th style="width:15%">HARI HADIR</th><th style="width:15%">PERATUS</th></tr></thead><tbody>`;
                 
                 saringMurid.forEach((m, idx) => {
-                    let hadirHari = 0;
-                    kunciTarikhTerlibat.forEach(t => { if(dataK[t][m.uid] === true) hadirHari++; });
-                    let peratus = ((hadirHari / bilanganHariSekolah) * 100).toFixed(1);
-                    htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td>${hadirHari} / ${bilanganHariSekolah} Hari</td><td><b>${peratus}%</b></td></tr>`;
+                    let hadirCount = 0;
+                    kunciTarikhTerlibat.forEach(t => {
+                        if(dataK[t] && dataK[t][m.uid] === true) hadirCount++;
+                    });
+                    let peratus = ((hadirCount / bilanganHariSekolah) * 100).toFixed(1);
+                    htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td><center>${hadirCount} / ${bilanganHariSekolah}</center></td><td><center><b>${peratus}%</b></center></td></tr>`;
                 });
                 htmlHTML += `</tbody></table>`;
             }
         }
         else if (jenis === 'rmt') {
-            subTajuk.innerText = `REKOD LOG BULANAN PROGRAM RMT (${teksKelas}) - BULAN: ${namaBulan.toUpperCase()} ${sTahun}`;
+            subTajuk.innerText = `ANALISIS REKOD KEHADIRAN RMT BULANAN (${teksKelas}) - BULAN: ${namaBulan.toUpperCase()} ${sTahun}`;
             const snapK = await db.ref('kehadiran').once('value');
             const dataK = snapK.val() || {};
 
             let saringMurid = databaseMurid.filter(m => (m.rmt === true || m.rmt === "true") && scarcityCheck(m, fTahun, fKelas));
-            
-            saringMurid.sort((a,b) => {
-                if (parseInt(a.tahun) !== parseInt(b.tahun)) return parseInt(a.tahun) - parseInt(b.tahun);
-                return a.nama.localeCompare(b.nama);
-            });
+            saringMurid.sort((a,b) => a.nama.localeCompare(b.nama));
 
             let kunciTarikhTerlibat = Object.keys(dataK).filter(t => t.startsWith(`${sTahun}-${sBulan}`));
+            let bilanganHariSekolah = kunciTarikhTerlibat.length;
 
-            if(kunciTarikhTerlibat.length === 0) {
-                htmlHTML = `<p style="color:red; text-align:center; font-weight:bold; padding:30px;">Tiada data log pengambilan makanan RMT pada bulan ${namaBulan} ${sTahun}.</p>`;
+            if(bilanganHariSekolah === 0) {
+                htmlHTML = `<p style="color:red; text-align:center; font-weight:bold; padding:30px;">Tiada data kehadiran RMT direkodkan bagi bulan ${namaBulan} ${sTahun}.</p>`;
             } else {
-                htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA PENERIMA RMT</th><th style="width:25%">KELAS</th><th>JUMLAH GAGASAN MAKAN (HARI)</th></tr></thead><tbody>`;
+                htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th>NAMA MURID RMT</th><th style="width:15%">KELAS</th><th style="width:15%">HARI HADIR RMT</th><th style="width:15%">PERATUS</th></tr></thead><tbody>`;
+                
                 saringMurid.forEach((m, idx) => {
-                    let makanHari = 0;
-                    kunciTarikhTerlibat.forEach(t => { if(dataK[t][m.uid] === true) makanHari++; });
-                    htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td><b>${makanHari} Hari Bersiar</b></td></tr>`;
+                    let hadirCount = 0;
+                    kunciTarikhTerlibat.forEach(t => {
+                        if(dataK[t] && dataK[t][m.uid] === true) hadirCount++;
+                    });
+                    let peratus = ((hadirCount / bilanganHariSekolah) * 100).toFixed(1);
+                    htmlHTML += `<tr><td>${idx+1}</td><td><b>${m.nama}</b></td><td>TAHUN ${m.tahun} ${m.namaKelas}</td><td><center>${hadirCount} / ${bilanganHariSekolah}</center></td><td><center><b>${peratus}%</b></center></td></tr>`;
                 });
                 htmlHTML += `</tbody></table>`;
             }
         }
-        else if(jenis === 'disiplin') {
-            subTajuk.innerText = `REKOD SALAH LAKU DISIPLIN BULANAN MURID (${teksKelas}) - BULAN: ${namaBulan.toUpperCase()} ${sTahun}`;
-            
-            let saringKes = databaseSalahLaku.filter(r => {
-                if(!r.tarikh || !r.tarikh.startsWith(`${sTahun}-${sBulan}`)) return false;
-                if(fTahun !== "ALL" && r.tahun != fTahun) return false;
-                if(fKelas !== "ALL" && r.kelas != fKelas) return false;
-                return true;
+        else if (jenis === 'disiplin') {
+            subTajuk.innerText = `LAPORAN REKOD KESALAHAN DISIPLIN MURID (${teksKelas}) - BULAN: ${namaBulan.toUpperCase()} ${sTahun}`;
+            let saringSalahLaku = databaseSalahLaku.filter(r => {
+                let m = databaseMurid.find(x => x.uid === r.uid);
+                let passKelas = m ? scarcityCheck(m, fTahun, fKelas) : true;
+                let passBulan = r.tarikh ? r.tarikh.startsWith(`${sTahun}-${sBulan}`) : false;
+                return passKelas && passBulan;
             });
 
-            if(saringKes.length === 0) {
-                htmlHTML = `<p style="color:green; text-align:center; font-weight:bold; padding:30px; border: 1px dashed #10b981; border-radius:10px;">Tiada Sebarang Rekod Salah Laku Dikesan Bagi Bulan ${namaBulan} ${sTahun}. Disiplin Murid Terpelihara.</p>`;
+            if(saringSalahLaku.length === 0) {
+                htmlHTML = `<p style="color:green; text-align:center; font-weight:bold; padding:30px;">Tiada kes salah laku direkodkan bagi bulan ${namaBulan} ${sTahun}.</p>`;
             } else {
-                htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th style="width:15%">TARIKH / MASA</th><th>NAMA MURID</th><th style="width:15%">KELAS</th><th style="width:25%">JENIS KESALAHAN</th><th>CATATAN GURU</th></tr></thead><tbody>`;
-                saringKes.forEach((r, idx) => {
-                    htmlHTML += `<tr><td>${idx+1}</td><td><small>${r.masa || r.tarikh}</small></td><td><b>${r.nama}</b></td><td>TAHUN ${r.tahun} ${r.kelas}</td><td style="font-weight:600; color:#b91c1c;">${r.kesalahan}</td><td>${r.catatan || '-'}</td></tr>`;
+                htmlHTML = `<table class="print-table"><thead><tr><th style="width:5%">BIL</th><th style="width:15%">TARIKH</th><th>NAMA MURID</th><th style="width:15%">KELAS</th><th>JENIS KESALAHAN</th></tr></thead><tbody>`;
+                saringSalahLaku.forEach((r, idx) => {
+                    htmlHTML += `<tr><td>${idx+1}</td><td>${r.tarikh || '-'}</td><td><b>${r.nama}</b></td><td>TAHUN ${r.tahun} ${r.kelas}</td><td style="color:red;"><b>${r.kesalahan}</b></td></tr>`;
                 });
                 htmlHTML += `</tbody></table>`;
             }
         }
 
         targetIsi.innerHTML = htmlHTML;
-        
-        setTimeout(() => { window.print(); }, 400);
+        setTimeout(() => { window.print(); }, 500);
     }
 
-    // --- LOGIK PENJANAAN GRID KELAS UTAMA ---
-    const grid = document.getElementById('gridKelas');
-    for(let t=1; t<=6; t++) {
-        ['DELIMA', 'ZAMRUD'].forEach(k => {
-            const btn = document.createElement('div');
-            btn.className = 'card-btn'; 
-            btn.innerText = `${t} ${k}`;
-            btn.onclick = () => {
-                curTahun = t; curKelas = k;
-                document.getElementById('menuFolder').style.display = 'none';
-                document.getElementById('senaraiView').style.display = 'block';
-                document.getElementById('labelKelas').innerText = `TAHUN ${t} ${k}`;
-                reRenderSenarai();
-            };
-            grid.appendChild(btn);
+    // --- LOGIK SENARAI KELAS & CARIAN ---
+    function binaGridKelas() {
+        const grid = document.getElementById('gridKelas');
+        if(!grid) return;
+        grid.innerHTML = "";
+        for(let t=1; t<=6; t++) {
+            const containerAliran = document.createElement('div');
+            containerAliran.style.gridColumn = "span 2";
+            containerAliran.className = "aliran-header";
+            containerAliran.innerText = `TAHUN ${t}`;
+            grid.appendChild(containerAliran);
+
+            ['DELIMA', 'ZAMRUD'].forEach(k => {
+                const btn = document.createElement('div');
+                btn.className = 'card-btn';
+                btn.innerText = `${t} ${k}`;
+                btn.onclick = () => bukaKelas(t, k);
+                grid.appendChild(btn);
+            });
+        }
+    }
+
+    function bukaKelas(tahun, kelas) {
+        curTahun = tahun; curKelas = kelas;
+        document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+        document.getElementById('menuFolder').style.display = 'none';
+        document.getElementById('senaraiView').style.display = 'block';
+        document.getElementById('labelKelas').innerText = `KELAS ${tahun} ${kelas}`;
+        renderMurid();
+    }
+
+    function renderMurid() {
+        const container = document.getElementById('muridContainer');
+        container.innerHTML = "";
+        let senarai = databaseMurid.filter(m => m.tahun == curTahun && m.namaKelas == curKelas);
+        senarai.sort((a,b) => a.nama.localeCompare(b.nama));
+
+        if(senarai.length === 0) {
+            container.innerHTML = `<div class="murid-item" style="text-align:center;">Tiada murid berdaftar dalam kelas ini.</div>`;
+            return;
+        }
+
+        senarai.forEach(m => {
+            container.innerHTML += `
+            <div class="murid-item">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div>
+                        <b style="font-size:0.95rem;">${m.nama}</b>
+                        ${m.rmt === true || m.rmt === "true" ? '<span style="background:var(--rmt); color:white; font-size:0.65rem; padding:2px 6px; border-radius:6px; margin-left:6px; font-weight:800;">RMT</span>' : ''}
+                    </div>
+                    <span class="badge-skor">${m.markah || 0}</span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${m.uid}', 5)">+5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--danger)" onclick="bukaFormSalahLaku('${m.uid}')">🚨 REKOD SALAH LAKU</button>
+                    <button class="btn-aksi" style="background:var(--gray-800); max-width:45px; padding:10px;" onclick="editMurid('${m.uid}')">✏️</button>
+                </div>
+            </div>`;
         });
     }
 
-    // --- FIREBASE REALTIME LISTENERS ---
+    function editMurid(uid) {
+        const m = databaseMurid.find(x => x.uid === uid);
+        if(!m) return;
+        document.getElementById('regUid').value = m.uid;
+        document.getElementById('regNama').value = m.nama;
+        document.getElementById('regTahun').value = m.tahun;
+        document.getElementById('regKelas').value = m.namaKelas;
+        document.getElementById('regRMT').checked = (m.rmt === true || m.rmt === "true");
+        document.getElementById('btnPadam').style.display = 'block';
+        document.getElementById('formView').style.display = 'block';
+    }
+
+    function logikCarian(val) {
+        if(!val.trim()) {
+            document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+            document.getElementById('menuFolder').style.display = 'block';
+            return;
+        }
+        document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
+        document.getElementById('menuFolder').style.display = 'none';
+        document.getElementById('senaraiView').style.display = 'block';
+        document.getElementById('labelKelas').innerText = `HASIL CARIAN`;
+
+        const container = document.getElementById('muridContainer');
+        container.innerHTML = "";
+        let hasil = databaseMurid.filter(m => m.nama.includes(val.toUpperCase()));
+
+        if(hasil.length === 0) {
+            container.innerHTML = `<div class="murid-item" style="text-align:center;">Tiada murid dijumpai.</div>`;
+            return;
+        }
+
+        hasil.forEach(m => {
+            container.innerHTML += `
+            <div class="murid-item">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div>
+                        <b style="font-size:0.95rem;">${m.nama}</b>
+                        <div style="font-size:0.75rem; color:var(--gray-600); font-weight:700;">TAHUN ${m.tahun} ${m.namaKelas}</div>
+                    </div>
+                    <span class="badge-skor">${m.markah || 0}</span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn-aksi" style="background:var(--success)" onclick="tukarMarkah('${m.uid}', 5)">+5 MERIT</button>
+                    <button class="btn-aksi" style="background:var(--danger)" onclick="bukaFormSalahLaku('${m.uid}')">🚨 REKOD SALAH LAKU</button>
+                    <button class="btn-aksi" style="background:var(--gray-800); max-width:45px; padding:10px;" onclick="editMurid('${m.uid}')">✏️</button>
+                </div>
+            </div>`;
+        });
+    }
+
+    // --- REALTIME DATABASE LISTENERS ---
     db.ref('pelajar').on('value', snap => {
-        const data = snap.val() || {}; databaseMurid = [];
-        for(let key in data) { databaseMurid.push({uid: key, ...data[key]}); }
-        if(document.getElementById('senaraiView').style.display === 'block') reRenderSenarai();
-        if(document.getElementById('kehadiranView').style.display === 'block') renderKehadiran();
-        if(document.getElementById('rmtView').style.display === 'block') renderRMT();
+        databaseMurid = [];
+        const data = snap.val();
+        if(data) {
+            for(let uid in data) {
+                databaseMurid.push({ uid: uid, ...data[uid] });
+            }
+        }
+        if(document.getElementById('senaraiView').style.display === 'block') {
+            if(document.getElementById('cariUtama').value) {
+                logikCarian(document.getElementById('cariUtama').value);
+            } else {
+                renderMurid();
+            }
+        }
+        if(document.getElementById('statistikMeritView').style.display === 'block') {
+            renderStatistikMerit();
+        }
     });
 
     db.ref('salahLaku').on('value', snap => {
-        const data = snap.val() || {}; databaseSalahLaku = [];
-        for(let key in data) { databaseSalahLaku.push({id: key, ...data[key]}); }
-        if(document.getElementById('disiplinView').style.display === 'block') renderDisiplinStats();
+        databaseSalahLaku = [];
+        const data = snap.val();
+        if(data) {
+            for(let id in data) {
+                databaseSalahLaku.unshift({ id: id, ...data[id] });
+            }
+        }
+        if(document.getElementById('disiplinView').style.display === 'block') {
+            renderDisiplinStats();
+        }
     });
 
     db.ref('kerjaRumah').on('value', snap => {
@@ -1651,63 +1830,12 @@
         }
     });
 
-    db.ref('guru').on('value', snap => {
-        guruList = snap.val() || {};
-        renderSenaraiGuru();
-        if(GURU_TOKEN && guruList[GURU_TOKEN]) {
-            currentGuru = { token:GURU_TOKEN, ...guruList[GURU_TOKEN] };
-            const banner=document.getElementById('guruNameBanner');
-            if(banner){ banner.style.display='block'; document.getElementById('guruNameText').textContent=currentGuru.nama||'Guru'; }
-        }
-    });
-
-    function logikCarian(val) {
-        if(val) {
-            document.querySelectorAll('.view-section').forEach(v => v.style.display = 'none');
-            document.getElementById('menuFolder').style.display = 'none';
-            document.getElementById('senaraiView').style.display = 'block';
-            document.getElementById('labelKelas').innerText = "HASIL CARIAN";
-            curTahun = null; 
-        } else { kembali(); }
-        reRenderSenarai();
-    }
-
-    function reRenderSenarai() {
-        const searchVal = document.getElementById('cariUtama').value.toUpperCase();
-        let list = searchVal 
-            ? databaseMurid.filter(m => m.nama.includes(searchVal)) 
-            : databaseMurid.filter(m => m.tahun == curTahun && m.namaKelas == curKelas);
-            
-        const container = document.getElementById('muridContainer'); container.innerHTML = "";
-        list.sort((a,b) => b.markah - a.markah).forEach(m => {
-            container.innerHTML += `
-            <div class="murid-item" id="item-${m.uid}">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div><b>${m.nama}</b><br><small style="color:var(--gray-600);">Tahun ${m.tahun} ${m.namaKelas}</small></div>
-                    <span class="badge-skor">${m.markah || 0}</span>
-                </div>
-                <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button class="btn-aksi" style="background:var(--success)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', 5, 'MANUAL')">+5</button>
-                    <button class="btn-aksi" style="background:var(--danger)" onclick="cetusGegar(document.getElementById('item-${m.uid}')); tukarMarkah('${m.uid}', -5, 'MANUAL')">-5</button>
-                    <button class="btn-aksi" style="background:#f1f5f9; color:black; max-width:40px;" onclick="editMurid('${m.uid}')">✏️</button>
-                </div>
-            </div>`;
-        });
-    }
-
-    window.editMurid = function(uid) {
-        const m = databaseMurid.find(x => x.uid === uid);
-        document.getElementById('regUid').value = m.uid;
-        document.getElementById('regNama').value = m.nama;
-        document.getElementById('regTahun').value = m.tahun;
-        document.getElementById('regKelas').value = m.namaKelas;
-        document.getElementById('regRMT').checked = m.rmt === true || m.rmt === "true";
-        document.getElementById('btnPadam').style.display = 'block';
-        document.getElementById('formView').style.display = 'block';
-    }
-
-    // Mulakan penentu paparan induk / guru.
-    muatKonfigurasiAkses().catch(err => console.error(err));
+    // --- INISIALISASI UTAMA ---
+    window.onload = async () => {
+        binaGridKelas();
+        await muatKonfigurasiAkses();
+    };
 </script>
+
 </body>
 </html>
